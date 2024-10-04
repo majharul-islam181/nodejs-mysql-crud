@@ -135,9 +135,42 @@ const updateStudentController = async (req, res) =>{
     
   }
 }
+
+
+//DELETE STUEDNT
+const deleteStudentController = async (req, res) =>{
+
+  try {
+    const studentId = req.params.id;
+
+    if(!studentId){
+      return res.status(404).send({
+        success:false,
+        message: "Please provide student Id or valid student id",
+      })
+    }
+
+    await database.query(`DELETE FROM students WHERE students_id = ?`, [studentId]);
+    res.status(201).send({
+      success: true,
+      message: "Deleted successfully",
+    })
+    
+  } catch (error) {
+    console.log(error),
+    res.status(500).send({
+      success: false,
+      message: "Error in Delete Student Api",
+      error,
+    });
+    
+  }
+
+}
 module.exports = {
   getStudentController,
   getStudentByIdController,
   createStudentController,
-  updateStudentController
+  updateStudentController,
+  deleteStudentController
 };
