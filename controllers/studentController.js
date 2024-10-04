@@ -97,8 +97,47 @@ const createStudentController = async (req, res) => {
   }
 };
 
+//UPDATE STUDENTS
+const updateStudentController = async (req, res) =>{
+  try {
+
+    const studentId = req.params.id;
+
+    if(!studentId){
+      return res.status(404).send({
+        success: false,
+        message: "Invalid ID or provide id",
+      })
+    }
+
+    const {name,roll_no, fees, className} = req.body
+    const data = await database.query(`UPDATE students SET name= ?, roll_no= ? , fees= ?, className = ? WHERE students_id = ? `,[name,roll_no,fees,className, studentId])
+    if(!data){
+      return res.status(500).send({
+        success: false,
+        message: "Error in update api",
+      })
+    }
+    res.status(200).send({
+      success: true,
+      message: "Student details updated"
+    })
+
+    
+  } catch (error) {
+
+    console.log(error),
+    res.status(500).send({
+      success: false,
+      message: "Error in Update Student Api",
+      error,
+    });
+    
+  }
+}
 module.exports = {
   getStudentController,
   getStudentByIdController,
   createStudentController,
+  updateStudentController
 };
