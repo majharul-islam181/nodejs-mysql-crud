@@ -37,9 +37,10 @@ const getStudentByIdController = async (req, res) => {
       });
     }
 
-    const data = await database.query(`SELECT * FROM students WHERE students_id=?`, [
-      studentId,
-    ]);
+    const data = await database.query(
+      `SELECT * FROM students WHERE students_id=?`,
+      [studentId]
+    );
     if (!data) {
       return res.status(400).send({
         success: false,
@@ -61,7 +62,43 @@ const getStudentByIdController = async (req, res) => {
   }
 };
 
+//CREATE STUDENT
+const createStudentController = async (req, res) => {
+  try {
+    const { name, roll_no,fees, className} = req.body;
+    if ((!name, !roll_no, !className)) {
+      return res.status(500).send({
+        message: "Please Provide all information",
+        success: false,
+      });
+    }
+
+    const data = await database.query(
+      `INSERT INTO students (name,roll_no,fees,className) VALUES (? , ? , ? , ?)`,
+      [name, roll_no, fees , className]
+    );
+    if (!data) {
+      return res.status(404).send({
+        success: false,
+        message: "Error in INSERT QUERY",
+      });
+    }
+    res.status(200).send({
+      success: true,
+      message: "New studnet Recorded created.",
+    });
+  } catch (error) {
+    console.log(error),
+      res.status(500).send({
+        success: false,
+        message: "Error in Create Student Api",
+        error,
+      });
+  }
+};
+
 module.exports = {
   getStudentController,
   getStudentByIdController,
+  createStudentController,
 };
